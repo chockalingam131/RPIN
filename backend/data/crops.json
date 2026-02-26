@@ -1,0 +1,50 @@
+{
+  "tomato": {
+    "crop_id": "tomato",
+    "name": "Tomato",
+    "shelf_life_days": 7,
+    "optimal_temperature": 15,
+    "humidity_tolerance": 85,
+    "handling_requirements": ["gentle_handling", "avoid_direct_sunlight", "proper_ventilation"]
+  },
+  "onion": {
+    "crop_id": "onion",
+    "name": "Onion",
+    "shelf_life_days": 30,
+    "optimal_temperature": 25,
+    "humidity_tolerance": 70,
+    "handling_requirements": ["dry_storage", "good_ventilation"]
+  },
+  "potato": {
+    "crop_id": "potato",
+    "name": "Potato",
+    "shelf_life_days": 45,
+    "optimal_temperature": 10,
+    "humidity_tolerance": 90,
+    "handling_requirements": ["dark_storage", "cool_temperature", "dry_conditions"]
+  },
+  "cabbage": {
+    "crop_id": "cabbage",
+    "name": "Cabbage",
+    "shelf_life_days": 14,
+    "optimal_temperature": 5,
+    "humidity_tolerance": 95,
+    "handling_requirements": ["refrigeration", "high_humidity"]
+  },
+  "carrot": {
+    "crop_id": "carrot",
+    "name": "Carrot",
+    "shelf_life_days": 21,
+    "optimal_temperature": 8,
+    "humidity_tolerance": 95,
+    "handling_requirements": ["refrigeration", "high_humidity", "remove_tops"]
+  },
+  "cauliflower": {
+    "crop_id": "cauliflower",
+    "name": "Cauliflower",
+    "shelf_life_days": 10,
+    "optimal_temperature": 5,
+    "humidity_tolerance": 95,
+    "handling_requirements": ["refrigeration", "gentle_handling"]
+  }
+}

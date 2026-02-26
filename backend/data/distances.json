@@ -1,0 +1,106 @@
+{
+  "theni": {
+    "village_id": "theni",
+    "name": "Theni",
+    "coordinates": [10.0104, 77.4768],
+    "markets": {
+      "madurai": 80,
+      "chennai": 520,
+      "coimbatore": 180,
+      "trichy": 200,
+      "salem": 280,
+      "erode": 220
+    }
+  },
+  "dindigul": {
+    "village_id": "dindigul",
+    "name": "Dindigul",
+    "coordinates": [10.3673, 77.9803],
+    "markets": {
+      "madurai": 65,
+      "chennai": 450,
+      "coimbatore": 120,
+      "trichy": 140,
+      "salem": 200,
+      "erode": 160
+    }
+  },
+  "salem": {
+    "village_id": "salem",
+    "name": "Salem",
+    "coordinates": [11.6643, 78.1460],
+    "markets": {
+      "madurai": 250,
+      "chennai": 340,
+      "coimbatore": 120,
+      "trichy": 180,
+      "salem": 0,
+      "erode": 60
+    }
+  },
+  "erode": {
+    "village_id": "erode",
+    "name": "Erode",
+    "coordinates": [11.3410, 77.7172],
+    "markets": {
+      "madurai": 200,
+      "chennai": 400,
+      "coimbatore": 90,
+      "trichy": 220,
+      "salem": 60,
+      "erode": 0
+    }
+  },
+  "namakkal": {
+    "village_id": "namakkal",
+    "name": "Namakkal",
+    "coordinates": [11.2189, 78.1677],
+    "markets": {
+      "madurai": 220,
+      "chennai": 380,
+      "coimbatore": 140,
+      "trichy": 120,
+      "salem": 50,
+      "erode": 80
+    }
+  },
+  "karur": {
+    "village_id": "karur",
+    "name": "Karur",
+    "coordinates": [10.9601, 78.0766],
+    "markets": {
+      "madurai": 150,
+      "chennai": 400,
+      "coimbatore": 140,
+      "trichy": 80,
+      "salem": 120,
+      "erode": 100
+    }
+  },
+  "tirupur": {
+    "village_id": "tirupur",
+    "name": "Tirupur",
+    "coordinates": [11.1085, 77.3411],
+    "markets": {
+      "madurai": 180,
+      "chennai": 480,
+      "coimbatore": 50,
+      "trichy": 200,
+      "salem": 140,
+      "erode": 60
+    }
+  },
+  "pollachi": {
+    "village_id": "pollachi",
+    "name": "Pollachi",
+    "coordinates": [10.6580, 77.0089],
+    "markets": {
+      "madurai": 140,
+      "chennai": 540,
+      "coimbatore": 40,
+      "trichy": 180,
+      "salem": 160,
+      "erode": 100
+    }
+  }
+}
