@@ -1,18 +1,9 @@
 """
 Vercel serverless function entry point for RPIN API
+Standalone version that works without complex imports
 """
-import sys
-from pathlib import Path
-
-# Add backend directory to Python path
-current_dir = Path(__file__).parent
-backend_path = current_dir.parent / 'backend'
-sys.path.insert(0, str(backend_path))
-
-# Import the FastAPI app
-from main import app
+from app import app
 
 # Export the app for Vercel
-# Vercel will automatically handle ASGI
 handler = app
 
