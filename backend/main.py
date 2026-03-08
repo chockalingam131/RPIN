@@ -4,7 +4,10 @@ Main FastAPI application entry point
 """
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from contextlib import asynccontextmanager
+from pathlib import Path
 import logging
 
 from app.core.config import settings
@@ -69,11 +72,18 @@ app.include_router(api_router, prefix=settings.API_V1_PREFIX)
 
 @app.get("/")
 async def root():
-    """Root endpoint"""
+    """Serve frontend"""
+    public_dir = Path(__file__).parent.parent / "public"
+    index_file = public_dir / "index.html"
+    
+    if index_file.exists():
+        return FileResponse(index_file)
+    
     return {
         "message": "Welcome to RPIN - Rural Producer Intelligence Network",
         "version": settings.VERSION,
-        "docs": "/docs"
+        "docs": "/docs",
+        "frontend": "Frontend not found. Please check deployment."
     }
 
 

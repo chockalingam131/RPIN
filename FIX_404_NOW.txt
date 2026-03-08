@@ -1,0 +1,83 @@
+================================================================================
+✅ FIX VERCEL 404 ERROR - RUN THESE COMMANDS NOW
+================================================================================
+
+PROBLEM: 404 NOT_FOUND error on Vercel
+
+SOLUTION: Updated routing and handler format
+
+================================================================================
+RUN THESE COMMANDS NOW
+================================================================================
+
+# Step 1: Commit the fixes
+git add .
+git commit -m "Fix Vercel 404 - update routing and handler"
+git push
+
+# Step 2: Wait for Vercel to auto-deploy (2-3 minutes)
+# Or manually redeploy from Vercel dashboard
+
+# Step 3: Test your app
+# Visit: https://your-app.vercel.app/
+
+================================================================================
+WHAT WAS FIXED
+================================================================================
+
+✅ api/index.py - Updated handler format for Vercel ASGI
+✅ vercel.json - Simplified routing configuration
+✅ public/index.html - Moved frontend to correct location
+✅ backend/main.py - Added frontend serving from root
+
+================================================================================
+TEST AFTER DEPLOYMENT
+================================================================================
+
+1. Root (Frontend):
+   https://your-app.vercel.app/
+   Should show: RPIN web interface
+
+2. Health Check:
+   https://your-app.vercel.app/health
+   Should show: {"status": "healthy", ...}
+
+3. API Docs:
+   https://your-app.vercel.app/docs
+   Should show: Swagger UI
+
+4. Make Prediction:
+   - Use the web form
+   - Village: Theni
+   - Crop: Tomato
+   - Quantity: 1000 kg
+   - Should return market recommendations
+
+================================================================================
+FILES CHANGED
+================================================================================
+
+✅ api/index.py - Handler format
+✅ vercel.json - Routing config
+✅ backend/main.py - Frontend serving
+✅ public/index.html - Frontend location
+✅ VERCEL_404_FIXED.md - Detailed explanation
+✅ FIX_404_NOW.txt - This file
+
+================================================================================
+READY TO FIX!
+================================================================================
+
+Run these 3 commands:
+
+  git add .
+  git commit -m "Fix Vercel 404 error"
+  git push
+
+Then wait 3 minutes and test your app!
+
+Your app will be live at: https://your-app.vercel.app/
+
+🚀 Let's fix it!
+
+================================================================================
