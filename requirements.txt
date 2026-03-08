@@ -1,11 +1,2 @@
-# FastAPI and server (lightweight)
-fastapi==0.109.0
-pydantic==2.5.3
-pydantic-settings==2.1.0
-
-# HTTP requests (lightweight)
-httpx==0.26.0
-
-# Utilities
-python-dotenv==1.0.0
-python-dateutil==2.8.2
+# No external dependencies needed
+# Using only Python standard library

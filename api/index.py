@@ -1,55 +1,8 @@
-"""
-Vercel serverless function entry point for RPIN API
-Complete standalone version
-"""
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-from pydantic import BaseModel
-from datetime import date, datetime
-from typing import List
+from http.server import BaseHTTPRequestHandler
+import json
+from urllib.parse import urlparse, parse_qs
+from datetime import datetime
 import random
-
-app = FastAPI(
-    title="RPIN - Rural Producer Intelligence Network",
-    version="1.0.0",
-    description="AI-powered market recommendation system for rural producers"
-)
-
-# CORS
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Models
-class PredictionRequest(BaseModel):
-    village_location: str
-    crop_type: str
-    quantity_kg: float
-    harvest_date: date
-
-class MarketRecommendation(BaseModel):
-    market_id: str
-    market_name: str
-    predicted_price: float
-    demand_level: str
-    spoilage_risk_percent: float
-    distance_km: float
-    transport_cost: float
-    net_profit: float
-
-class PredictionResponse(BaseModel):
-    request_id: str
-    village_location: str
-    crop_type: str
-    quantity_kg: float
-    markets: List[MarketRecommendation]
-    best_market: str
-    explanation: str
 
 # Sample data
 CROPS = {
@@ -81,177 +34,201 @@ DISTANCES = {
     "pollachi": {"madurai": 160, "chennai": 480, "coimbatore": 40, "trichy": 140, "salem": 120, "erode": 80}
 }
 
-@app.get("/", response_class=HTMLResponse)
-async def root():
-    """Serve simple frontend"""
-    return """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>RPIN - Rural Producer Intelligence Network</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body {
-                font-family: Arial, sans-serif;
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                min-height: 100vh;
-                padding: 20px;
-            }
-            .container { max-width: 800px; margin: 0 auto; }
-            .card {
-                background: white;
-                border-radius: 15px;
-                padding: 30px;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-                margin-bottom: 20px;
-            }
-            h1 { color: #667eea; margin-bottom: 10px; }
-            .status { color: #28a745; font-weight: bold; font-size: 1.2em; margin: 20px 0; }
-            a { color: #667eea; text-decoration: none; font-weight: bold; }
-            a:hover { text-decoration: underline; }
-            ul { margin: 20px 0; padding-left: 20px; }
-            li { margin: 10px 0; }
-            pre {
-                background: #f5f5f5;
-                padding: 15px;
-                border-radius: 5px;
-                overflow-x: auto;
-                margin: 10px 0;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="card">
-                <h1>🌾 RPIN - Rural Producer Intelligence Network</h1>
-                <p class="status">✅ API is running successfully!</p>
-                <p>AI-powered market recommendation system for rural producers.</p>
-                
-                <h2 style="margin-top: 30px;">📚 Available Endpoints:</h2>
-                <ul>
-                    <li><a href="/docs">📖 Interactive API Documentation (Swagger UI)</a></li>
-                    <li><a href="/health">💚 Health Check</a></li>
-                    <li><a href="/api/v1/crops">🌱 List Available Crops</a></li>
-                    <li><a href="/api/v1/markets">🏪 List Available Markets</a></li>
-                </ul>
-                
-                <h2 style="margin-top: 30px;">🧪 Quick Test:</h2>
-                <p>Use the <a href="/docs">Interactive API Documentation</a> to test predictions.</p>
-                
-                <p style="margin-top: 20px;"><strong>Sample Request:</strong></p>
-                <pre>POST /api/v1/predict
-{
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        parsed_path = urlparse(self.path)
+        path = parsed_path.path
+        
+        if path == '/':
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>RPIN - Rural Producer Intelligence Network</title>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <style>
+                    * { margin: 0; padding: 0; box-sizing: border-box; }
+                    body {
+                        font-family: Arial, sans-serif;
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        min-height: 100vh;
+                        padding: 20px;
+                    }
+                    .container { max-width: 800px; margin: 0 auto; }
+                    .card {
+                        background: white;
+                        border-radius: 15px;
+                        padding: 30px;
+                        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+                    }
+                    h1 { color: #667eea; margin-bottom: 10px; }
+                    .status { color: #28a745; font-weight: bold; font-size: 1.2em; margin: 20px 0; }
+                    a { color: #667eea; text-decoration: none; font-weight: bold; }
+                    ul { margin: 20px 0; padding-left: 20px; }
+                    li { margin: 10px 0; }
+                    pre { background: #f5f5f5; padding: 15px; border-radius: 5px; overflow-x: auto; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <div class="card">
+                        <h1>🌾 RPIN - Rural Producer Intelligence Network</h1>
+                        <p class="status">✅ API is running successfully!</p>
+                        <p>AI-powered market recommendation system for rural producers.</p>
+                        
+                        <h2 style="margin-top: 30px;">📚 Available Endpoints:</h2>
+                        <ul>
+                            <li><a href="/health">💚 Health Check</a></li>
+                            <li><a href="/api/v1/crops">🌱 List Available Crops</a></li>
+                            <li><a href="/api/v1/markets">🏪 List Available Markets</a></li>
+                        </ul>
+                        
+                        <h2 style="margin-top: 30px;">🧪 Test Prediction:</h2>
+                        <p>Send POST request to <code>/api/v1/predict</code></p>
+                        <pre>{
   "village_location": "theni",
   "crop_type": "tomato",
   "quantity_kg": 1000,
   "harvest_date": "2024-03-15"
 }</pre>
-                
-                <p style="margin-top: 20px;"><strong>Supported Villages:</strong> theni, dindigul, salem, erode, namakkal, karur, tirupur, pollachi</p>
-                <p><strong>Supported Crops:</strong> tomato, onion, potato, cabbage, carrot, cauliflower</p>
-            </div>
-        </div>
-    </body>
-    </html>
-    """
-
-@app.get("/health")
-async def health():
-    """Health check"""
-    return {
-        "status": "healthy",
-        "service": "RPIN - Rural Producer Intelligence Network",
-        "version": "1.0.0"
-    }
-
-@app.get("/api/v1/crops")
-async def list_crops():
-    """List available crops"""
-    return {"crops": [{"id": k, **v} for k, v in CROPS.items()]}
-
-@app.get("/api/v1/markets")
-async def list_markets():
-    """List available markets"""
-    return {"markets": [{"id": k, **v} for k, v in MARKETS.items()]}
-
-@app.post("/api/v1/predict", response_model=PredictionResponse)
-async def predict(request: PredictionRequest):
-    """Make market prediction"""
-    
-    # Validate inputs
-    if request.village_location.lower() not in DISTANCES:
-        return {"error": f"Village '{request.village_location}' not supported"}
-    
-    if request.crop_type.lower() not in CROPS:
-        return {"error": f"Crop '{request.crop_type}' not supported"}
-    
-    # Get data
-    village_distances = DISTANCES[request.village_location.lower()]
-    crop_data = CROPS[request.crop_type.lower()]
-    base_price = crop_data["base_price"]
-    
-    # Generate recommendations
-    recommendations = []
-    for market_id, distance in village_distances.items():
-        market_data = MARKETS[market_id]
-        
-        # Simple price prediction (base + random variation)
-        predicted_price = base_price + random.uniform(-3, 8)
-        
-        # Demand level based on price
-        if predicted_price > base_price + 3:
-            demand_level = "High"
-        elif predicted_price < base_price - 2:
-            demand_level = "Low"
+                        <p style="margin-top: 20px;"><strong>Supported Villages:</strong> theni, dindigul, salem, erode, namakkal, karur, tirupur, pollachi</p>
+                        <p><strong>Supported Crops:</strong> tomato, onion, potato, cabbage, carrot, cauliflower</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+            """
+            self.wfile.write(html.encode())
+            
+        elif path == '/health':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            response = {
+                "status": "healthy",
+                "service": "RPIN - Rural Producer Intelligence Network",
+                "version": "1.0.0"
+            }
+            self.wfile.write(json.dumps(response).encode())
+            
+        elif path == '/api/v1/crops':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            crops_list = [{"id": k, **v} for k, v in CROPS.items()]
+            self.wfile.write(json.dumps({"crops": crops_list}).encode())
+            
+        elif path == '/api/v1/markets':
+            self.send_response(200)
+            self.send_header('Content-type', 'application/json')
+            self.send_header('Access-Control-Allow-Origin', '*')
+            self.end_headers()
+            markets_list = [{"id": k, **v} for k, v in MARKETS.items()]
+            self.wfile.write(json.dumps({"markets": markets_list}).encode())
+            
         else:
-            demand_level = "Medium"
-        
-        # Spoilage risk based on distance
-        spoilage_risk = min(100, (distance / 10) + random.uniform(0, 5))
-        
-        # Transport cost (₹4 per km per quintal)
-        quintals = request.quantity_kg / 100
-        transport_cost = distance * 4 * quintals
-        
-        # Net profit
-        revenue = predicted_price * request.quantity_kg
-        net_profit = revenue - transport_cost
-        
-        recommendations.append(MarketRecommendation(
-            market_id=market_id,
-            market_name=market_data["name"],
-            predicted_price=round(predicted_price, 2),
-            demand_level=demand_level,
-            spoilage_risk_percent=round(spoilage_risk, 1),
-            distance_km=distance,
-            transport_cost=round(transport_cost, 2),
-            net_profit=round(net_profit, 2)
-        ))
+            self.send_response(404)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({"error": "Not found"}).encode())
     
-    # Sort by net profit
-    recommendations.sort(key=lambda x: x.net_profit, reverse=True)
+    def do_POST(self):
+        if self.path == '/api/v1/predict':
+            content_length = int(self.headers['Content-Length'])
+            post_data = self.rfile.read(content_length)
+            
+            try:
+                request_data = json.loads(post_data.decode())
+                
+                village = request_data.get('village_location', '').lower()
+                crop = request_data.get('crop_type', '').lower()
+                quantity = float(request_data.get('quantity_kg', 0))
+                
+                if village not in DISTANCES:
+                    raise ValueError(f"Village '{village}' not supported")
+                if crop not in CROPS:
+                    raise ValueError(f"Crop '{crop}' not supported")
+                
+                village_distances = DISTANCES[village]
+                crop_data = CROPS[crop]
+                base_price = crop_data["base_price"]
+                
+                recommendations = []
+                for market_id, distance in village_distances.items():
+                    market_data = MARKETS[market_id]
+                    
+                    predicted_price = base_price + random.uniform(-3, 8)
+                    
+                    if predicted_price > base_price + 3:
+                        demand_level = "High"
+                    elif predicted_price < base_price - 2:
+                        demand_level = "Low"
+                    else:
+                        demand_level = "Medium"
+                    
+                    spoilage_risk = min(100, (distance / 10) + random.uniform(0, 5))
+                    quintals = quantity / 100
+                    transport_cost = distance * 4 * quintals
+                    revenue = predicted_price * quantity
+                    net_profit = revenue - transport_cost
+                    
+                    recommendations.append({
+                        "market_id": market_id,
+                        "market_name": market_data["name"],
+                        "predicted_price": round(predicted_price, 2),
+                        "demand_level": demand_level,
+                        "spoilage_risk_percent": round(spoilage_risk, 1),
+                        "distance_km": distance,
+                        "transport_cost": round(transport_cost, 2),
+                        "net_profit": round(net_profit, 2)
+                    })
+                
+                recommendations.sort(key=lambda x: x["net_profit"], reverse=True)
+                best = recommendations[0]
+                
+                explanation = (
+                    f"For {quantity}kg of {crop_data['name']} from {village.title()}, "
+                    f"selling in {best['market_name']} gives ₹{best['net_profit']:,.0f} profit. "
+                    f"This market offers the best price (₹{best['predicted_price']:.2f}/kg) with {best['demand_level'].lower()} demand."
+                )
+                
+                response = {
+                    "request_id": f"req_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
+                    "village_location": village,
+                    "crop_type": crop,
+                    "quantity_kg": quantity,
+                    "markets": recommendations,
+                    "best_market": best["market_name"],
+                    "explanation": explanation
+                }
+                
+                self.send_response(200)
+                self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps(response).encode())
+                
+            except Exception as e:
+                self.send_response(400)
+                self.send_header('Content-type', 'application/json')
+                self.send_header('Access-Control-Allow-Origin', '*')
+                self.end_headers()
+                self.wfile.write(json.dumps({"error": str(e)}).encode())
+        else:
+            self.send_response(404)
+            self.send_header('Content-type', 'application/json')
+            self.end_headers()
+            self.wfile.write(json.dumps({"error": "Not found"}).encode())
     
-    # Generate explanation
-    best = recommendations[0]
-    explanation = (
-        f"For {request.quantity_kg}kg of {crop_data['name']} from {request.village_location.title()}, "
-        f"selling in {best.market_name} gives ₹{best.net_profit:,.0f} profit. "
-        f"This market offers the best price (₹{best.predicted_price:.2f}/kg) with {best.demand_level.lower()} demand "
-        f"and manageable transport cost (₹{best.transport_cost:,.0f} for {best.distance_km}km)."
-    )
-    
-    return PredictionResponse(
-        request_id=f"req_{datetime.now().strftime('%Y%m%d_%H%M%S')}",
-        village_location=request.village_location,
-        crop_type=request.crop_type,
-        quantity_kg=request.quantity_kg,
-        markets=recommendations,
-        best_market=best.market_name,
-        explanation=explanation
-    )
-
-# Export for Vercel
-handler = app
-
+    def do_OPTIONS(self):
+        self.send_response(200)
+        self.send_header('Access-Control-Allow-Origin', '*')
+        self.send_header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
+        self.end_headers()
