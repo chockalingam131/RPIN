@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RPIN API Test</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        h1 { color: #667eea; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { opacity: 0.9; }
+        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        #result {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 5px;
+            display: none;
+        }
+        .success { border-left: 4px solid #28a745; }
+        .error { border-left: 4px solid #dc3545; }
+        pre {
+            background: white;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-top: 10px;
+        }
+        .market-card {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border-left: 4px solid #667eea;
+        }
+        .best-market { border-left-color: #28a745; background: #d4edda; }
+        .profit { font-size: 1.5em; font-weight: bold; color: #28a745; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌾 RPIN API Test</h1>
+        <p style="margin-bottom: 20px; color: #666;">Test your deployed RPIN API</p>
+        
+        <div class="form-group">
+            <label>API URL:</label>
+            <input type="text" id="apiUrl" value="https://your-app.vercel.app" placeholder="https://your-app.vercel.app">
+            <small style="color: #666;">Replace with your actual Vercel URL</small>
+        </div>
+        
+        <div class="form-group">
+            <label>Village:</label>
+            <select id="village">
+                <option value="theni">Theni</option>
+                <option value="dindigul">Dindigul</option>
+                <option value="salem">Salem</option>
+                <option value="erode">Erode</option>
+                <option value="namakkal">Namakkal</option>
+                <option value="karur">Karur</option>
+                <option value="tirupur">Tirupur</option>
+                <option value="pollachi">Pollachi</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Crop:</label>
+            <select id="crop">
+                <option value="tomato">Tomato</option>
+                <option value="onion">Onion</option>
+                <option value="potato">Potato</option>
+                <option value="cabbage">Cabbage</option>
+                <option value="carrot">Carrot</option>
+                <option value="cauliflower">Cauliflower</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label>Quantity (kg):</label>
+            <input type="number" id="quantity" value="1000" min="1">
+        </div>
+        
+        <div class="form-group">
+            <label>Harvest Date:</label>
+            <input type="date" id="harvestDate" value="2024-03-15">
+        </div>
+        
+        <button onclick="testAPI()" id="testBtn">🚀 Test Prediction API</button>
+        
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        // Set today as minimum date
+        document.getElementById('harvestDate').min = new Date().toISOString().split('T')[0];
+        
+        async function testAPI() {
+            const resultDiv = document.getElementById('result');
+            const testBtn = document.getElementById('testBtn');
+            
+            // Get values
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            const village = document.getElementById('village').value;
+            const crop = document.getElementById('crop').value;
+            const quantity = parseFloat(document.getElementById('quantity').value);
+            const harvestDate = document.getElementById('harvestDate').value;
+            
+            // Validate
+            if (!apiUrl) {
+                alert('Please enter your Vercel API URL');
+                return;
+            }
+            
+            // Show loading
+            resultDiv.style.display = 'block';
+            resultDiv.className = '';
+            resultDiv.innerHTML = '<h3>⏳ Loading...</h3><p>Making prediction request...</p>';
+            testBtn.disabled = true;
+            
+            try {
+                const response = await fetch(`${apiUrl}/api/v1/predict`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        village_location: village,
+                        crop_type: crop,
+                        quantity_kg: quantity,
+                        harvest_date: harvestDate
+                    })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // Success - show formatted results
+                    let html = '<h3 class="success">✅ Prediction Successful!</h3>';
+                    html += `<p><strong>Request ID:</strong> ${data.request_id}</p>`;
+                    html += `<p><strong>Best Market:</strong> ${data.best_market}</p>`;
+                    html += `<div style="margin: 20px 0; padding: 15px; background: #d4edda; border-radius: 5px;">`;
+                    html += `<h4>💡 Explanation:</h4><p>${data.explanation}</p></div>`;
+                    
+                    html += '<h4 style="margin-top: 20px;">📊 Market Recommendations:</h4>';
+                    data.markets.forEach((market, index) => {
+                        const isBest = index === 0;
+                        html += `<div class="market-card ${isBest ? 'best-market' : ''}">`;
+                        html += `<h4>${isBest ? '⭐ ' : ''}${market.market_name}</h4>`;
+                        html += `<p class="profit">₹${market.net_profit.toLocaleString('en-IN')} profit</p>`;
+                        html += `<p><strong>Price:</strong> ₹${market.predicted_price}/kg | `;
+                        html += `<strong>Demand:</strong> ${market.demand_level} | `;
+                        html += `<strong>Distance:</strong> ${market.distance_km}km</p>`;
+                        html += `<p><strong>Spoilage Risk:</strong> ${market.spoilage_risk_percent}% | `;
+                        html += `<strong>Transport Cost:</strong> ₹${market.transport_cost.toLocaleString('en-IN')}</p>`;
+                        html += '</div>';
+                    });
+                    
+                    html += '<details style="margin-top: 20px;"><summary style="cursor: pointer; font-weight: bold;">📄 View Raw JSON</summary>';
+                    html += '<pre>' + JSON.stringify(data, null, 2) + '</pre></details>';
+                    
+                    resultDiv.className = 'success';
+                    resultDiv.innerHTML = html;
+                } else {
+                    // Error response
+                    resultDiv.className = 'error';
+                    resultDiv.innerHTML = '<h3>❌ Error</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                }
+            } catch (error) {
+                resultDiv.className = 'error';
+                resultDiv.innerHTML = '<h3>❌ Error</h3><p>' + error.message + '</p>';
+                resultDiv.innerHTML += '<p style="margin-top: 10px;">Make sure:</p>';
+                resultDiv.innerHTML += '<ul style="margin-left: 20px;"><li>Your API URL is correct</li>';
+                resultDiv.innerHTML += '<li>Your API is deployed and running</li>';
+                resultDiv.innerHTML += '<li>CORS is enabled (it should be)</li></ul>';
+            } finally {
+                testBtn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
