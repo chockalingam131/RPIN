@@ -1,0 +1,94 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                    RPIN - QUICK DEPLOYMENT REFERENCE                         ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ STATUS: ✅ READY TO DEPLOY                                                   │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ DEPLOY IN 3 COMMANDS                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Windows:
+  deploy.bat
+
+Linux/Mac:
+  chmod +x deploy.sh
+  ./deploy.sh
+
+Then: Go to vercel.com/new → Import repo → Deploy
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ OR MANUAL DEPLOYMENT                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+git init
+git add .
+git commit -m "Initial commit"
+git remote add origin https://github.com/YOUR_USERNAME/rpin.git
+git push -u origin main
+
+Then: vercel.com/new → Import → Deploy
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ AFTER DEPLOYMENT                                                             │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Your app: https://your-project.vercel.app
+API docs: https://your-project.vercel.app/docs
+Health:   https://your-project.vercel.app/health
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ TEST PREDICTION                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Village:  Theni
+Crop:     Tomato
+Quantity: 1000 kg
+Date:     (future date)
+
+Click "Get Recommendations" → See AI results!
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ DEMO SCENARIOS                                                               │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+1. High Profit:    Theni + Tomato + 1000kg
+2. Spoilage Risk:  Dindigul + Cabbage + 500kg + 7 days
+3. Transport Cost: Pollachi + Potato + 2000kg
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ DOCUMENTATION                                                                │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Quick:    START_HERE.md, DEPLOY_NOW.md
+Detailed: VERCEL_DEPLOY.md, FIXES_AND_DEPLOYMENT.md
+App:      README.md, USER_GUIDE.md, COMPLETE_GUIDE.md
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ COST                                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Vercel Free Tier: $0
+Perfect for hackathons!
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ TROUBLESHOOTING                                                              │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+Git not found?        → Install from git-scm.com
+Can't push to GitHub? → Create repo first at github.com/new
+Vercel fails?         → Check build logs in dashboard
+API 404?              → Verify api/index.py exists
+
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ READY? RUN THIS NOW:                                                         │
+└──────────────────────────────────────────────────────────────────────────────┘
+
+  Windows:    deploy.bat
+  Linux/Mac:  ./deploy.sh
+
+Time: 5 minutes | Cost: $0 | Difficulty: Easy
+
+🚀 LET'S GO!

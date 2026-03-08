@@ -326,8 +326,10 @@
     </div>
 
     <script>
-        // API Configuration
-        const API_BASE_URL = 'http://localhost:8000/api/v1';
+        // API Configuration - Auto-detect environment
+        const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+            ? 'http://localhost:8000/api/v1'
+            : '/api/v1';
 
         // Set minimum date to today
         document.getElementById('harvestDate').min = new Date().toISOString().split('T')[0];

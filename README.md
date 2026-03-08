@@ -14,9 +14,9 @@ RPIN helps rural producers (farmers, small-scale growers, artisans) make informe
 
 **AI for Rural Innovation & Sustainable Systems**
 
-## ✅ Current Status: COMPLETE
+## ✅ Current Status: READY TO DEPLOY
 
-### All Tasks Completed! 🎉
+### All Features Complete! 🎉
 
 - ✅ **Core Infrastructure**: FastAPI application with configuration, logging, and error handling
 - ✅ **Data Models**: Pydantic models for validation and API documentation
@@ -26,14 +26,38 @@ RPIN helps rural producers (farmers, small-scale growers, artisans) make informe
 - ✅ **API Endpoints**: Complete REST API with interactive documentation
 - ✅ **Frontend**: Responsive web interface with HTML/JavaScript
 - ✅ **Sample Data**: 6 crops, 6 markets, 8 villages with distances
-- ✅ **Documentation**: Complete guides for usage and AWS deployment
+- ✅ **Documentation**: Complete guides for usage and deployment
+- ✅ **Vercel Ready**: Configured for instant deployment
 
-## 🚀 Quick Start
+## 🚀 Deploy to Vercel (Recommended)
+
+### Quick Deploy - No Python Installation Required!
+
+**Option 1: Automated Script (Windows)**
+```bash
+deploy.bat
+```
+
+**Option 2: Automated Script (Linux/Mac)**
+```bash
+chmod +x deploy.sh
+./deploy.sh
+```
+
+**Option 3: Manual Steps**
+1. Push to GitHub
+2. Go to [vercel.com/new](https://vercel.com/new)
+3. Import your repository
+4. Click "Deploy"
+5. Done! ✅
+
+**📖 Detailed Guide:** See [DEPLOY_NOW.md](DEPLOY_NOW.md)
+
+## 🖥️ Run Locally (Optional)
 
 ### Prerequisites
 
 - Python 3.9+
-- Node.js 16+ (for frontend)
 - Git
 
 ### Setup & Run
