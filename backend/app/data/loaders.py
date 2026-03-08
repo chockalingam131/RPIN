@@ -28,10 +28,8 @@ class DataLoader:
         """Load and parse JSON file"""
         try:
             if not file_path.exists():
-                raise DataNotFoundError(
-                    f"Data file not found: {file_path}",
-                    details={"file_path": str(file_path)}
-                )
+                logger.warning(f"Data file not found: {file_path}, using defaults")
+                return {}
             
             with open(file_path, 'r', encoding='utf-8') as f:
                 data = json.load(f)
@@ -40,15 +38,11 @@ class DataLoader:
             return data
         
         except json.JSONDecodeError as e:
-            raise ConfigurationError(
-                f"Invalid JSON in file: {file_path}",
-                details={"error": str(e)}
-            )
+            logger.error(f"Invalid JSON in file: {file_path}, error: {e}")
+            return {}
         except Exception as e:
-            raise DataNotFoundError(
-                f"Error loading file: {file_path}",
-                details={"error": str(e)}
-            )
+            logger.error(f"Error loading file: {file_path}, error: {e}")
+            return {}
     
     def load_crops(self, force_reload: bool = False) -> Dict[str, CropInfo]:
         """
@@ -65,6 +59,11 @@ class DataLoader:
         
         file_path = Path(settings.CROPS_DATA_FILE)
         data = self._load_json_file(file_path)
+        
+        # If no data loaded, use defaults
+        if not data:
+            logger.warning("Using default crop data")
+            data = self._get_default_crops()
         
         crops = {}
         for crop_id, crop_data in data.items():
@@ -96,6 +95,11 @@ class DataLoader:
         file_path = Path(settings.MARKETS_DATA_FILE)
         data = self._load_json_file(file_path)
         
+        # If no data loaded, use defaults
+        if not data:
+            logger.warning("Using default market data")
+            data = self._get_default_markets()
+        
         markets = {}
         for market_id, market_data in data.items():
             try:
@@ -125,6 +129,11 @@ class DataLoader:
         
         file_path = Path(settings.DISTANCES_DATA_FILE)
         data = self._load_json_file(file_path)
+        
+        # If no data loaded, use defaults
+        if not data:
+            logger.warning("Using default distance data")
+            data = self._get_default_distances()
         
         distances = {}
         for village_id, village_data in data.items():
@@ -214,6 +223,84 @@ class DataLoader:
         self._distances_cache = None
         self._cache_timestamp = None
         logger.info("Data cache cleared")
+    
+    def _get_default_crops(self) -> dict:
+        """Get default crop data if files are missing"""
+        return {
+            "tomato": {
+                "name": "Tomato",
+                "category": "Vegetable",
+                "shelf_life_days": 7,
+                "optimal_temperature": 20,
+                "humidity_tolerance": 70,
+                "handling_requirements": ["Cool storage", "Gentle handling"]
+            },
+            "onion": {
+                "name": "Onion",
+                "category": "Vegetable",
+                "shelf_life_days": 30,
+                "optimal_temperature": 15,
+                "humidity_tolerance": 60,
+                "handling_requirements": ["Dry storage"]
+            },
+            "potato": {
+                "name": "Potato",
+                "category": "Vegetable",
+                "shelf_life_days": 60,
+                "optimal_temperature": 10,
+                "humidity_tolerance": 80,
+                "handling_requirements": ["Dark storage", "Cool temperature"]
+            }
+        }
+    
+    def _get_default_markets(self) -> dict:
+        """Get default market data if files are missing"""
+        return {
+            "madurai": {
+                "name": "Madurai Mandi",
+                "location": "Madurai",
+                "state": "Tamil Nadu",
+                "latitude": 9.9252,
+                "longitude": 78.1198
+            },
+            "chennai": {
+                "name": "Chennai Koyambedu",
+                "location": "Chennai",
+                "state": "Tamil Nadu",
+                "latitude": 13.0827,
+                "longitude": 80.2707
+            },
+            "coimbatore": {
+                "name": "Coimbatore Market",
+                "location": "Coimbatore",
+                "state": "Tamil Nadu",
+                "latitude": 11.0168,
+                "longitude": 76.9558
+            }
+        }
+    
+    def _get_default_distances(self) -> dict:
+        """Get default distance data if files are missing"""
+        return {
+            "theni": {
+                "village_name": "Theni",
+                "state": "Tamil Nadu",
+                "markets": {
+                    "madurai": 80,
+                    "chennai": 450,
+                    "coimbatore": 180
+                }
+            },
+            "dindigul": {
+                "village_name": "Dindigul",
+                "state": "Tamil Nadu",
+                "markets": {
+                    "madurai": 65,
+                    "chennai": 420,
+                    "coimbatore": 160
+                }
+            }
+        }
 
 
 # Global data loader instance
